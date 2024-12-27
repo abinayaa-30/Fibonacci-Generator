@@ -1,0 +1,43 @@
+
+module tb_fibonacci_generator;
+    reg clk;
+    reg rst;
+    reg start;
+    wire [7:0] fib_out;
+    wire done;
+
+    fibonacci_generator #(8) uut (
+        .clk(clk),
+        .rst(rst),
+        .start(start),
+        .fib_out(fib_out),
+        .done(done)
+    );
+
+    initial begin
+        
+        clk = 0;
+        rst = 1;
+        start = 0;
+        #10;
+
+        rst = 0;
+        #10;
+
+        start = 1;
+        #10;
+
+        start = 0;
+        #200;
+        
+        $finish;
+    end
+
+    always #5 clk = ~clk;
+
+    initial begin
+        $dumpfile("fibonacci_generator.vcd");
+        $dumpvars(0, tb_fibonacci_generator);
+    end
+endmodule
+
