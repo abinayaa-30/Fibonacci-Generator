@@ -1,0 +1,50 @@
+
+module fibonacci_generator #(parameter WIDTH = 8)(
+    input clk,
+    input rst,
+    input start,
+    output reg [WIDTH-1:0] fib_out,
+    output reg done
+);
+
+    reg [WIDTH-1:0] a, b;
+    reg [3:0] state;
+
+    localparam IDLE = 0, INIT = 1, CALC = 2, DONE = 3;
+
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            a <= 0;
+            b <= 0;
+            fib_out <= 0;
+            state <= IDLE;
+            done <= 0;
+        end else begin
+            case (state)
+                IDLE: begin
+                    if (start) begin
+                        state <= INIT;
+                    end
+                end
+                INIT: begin
+                    a <= 0;
+                    b <= 1;
+                    state <= CALC;
+                end
+                CALC: begin
+                    fib_out <= a;
+                    if (a + b > {WIDTH{1'b1}}) begin
+                        state <= DONE;
+                    end else begin
+                        b <= a + b;
+                        a <= b;
+                    end
+                end
+                DONE: begin
+                    done <= 1;
+                end
+            endcase
+        end
+    end
+endmodule
+
